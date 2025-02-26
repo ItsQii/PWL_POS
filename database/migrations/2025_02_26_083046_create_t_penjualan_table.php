@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('t_penjualan', function (Blueprint $table) {
             $table->id('penjualan_id');
-            $table->string('pembeli', 50);
             $table->string('penjualan_kode', 20)->unique();
             $table->dateTime('penjualan_tanggal');
             $table->timestamps();
-
-            $table->unsignedBigInteger('barang_id')->index(); // indexing untuk ForeignKey
+            
+            $table->unsignedBigInteger('user_id')->index();
             $table->foreign('user_id')->references('user_id')->on('m_user');
         });
     }
