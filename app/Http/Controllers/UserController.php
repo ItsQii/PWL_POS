@@ -9,15 +9,10 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public function index(){
-        $data = [
-            'level_id' =>2,
-            'username' => 'manager_tiga',
-            'nama' => 'Manager 3',
-            'password' => Hash::make('12345')
-        ];
-        Usermodel::create($data);
 
-        $user = UserModel::all();
+        $user = UserModel::findOr(1, ['username', 'nama'], function (){
+            abort(404);
+        });
         return view('user', ['data' => $user]);
     }
 }
