@@ -26,6 +26,7 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::middleware(['auth'])->group(function () {
 Route::get('/', [WelcomeController::class, 'index']);
 
+Route::middleware(['authorize:ADM,MNG'])->group(function () {
 Route::group(['prefix' => 'user'], function () {
     Route::get('/', [UserController::class, 'index']);
     Route::post('/list', [UserController::class, 'list']);
@@ -43,8 +44,9 @@ Route::group(['prefix' => 'user'], function () {
     Route::get('/{id}/show_ajax', [UserController::class, 'show_ajax']);
     Route::delete('/{id}', [UserController::class, 'destroy']);
 });
+});
 
-Route::middleware(['authorize:ADM'])->group(function () {
+Route::middleware(['authorize:ADM,MNG'])->group(function () {
 Route::group(['prefix' => 'level'], function () {
     Route::get('/', [LevelController::class, 'index']);
         Route::post('/list', [LevelController::class, 'list']);
@@ -64,6 +66,7 @@ Route::group(['prefix' => 'level'], function () {
 });
 });
 
+Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
 Route::group(['prefix' => 'kategori'], function () {
     Route::get('/', [KategoriController::class, 'index']);
         Route::post('/list', [KategoriController::class, 'list']);
@@ -81,7 +84,9 @@ Route::group(['prefix' => 'kategori'], function () {
         Route::get('/{id}/show_ajax', [KategoriController::class, 'show_ajax']);
         Route::delete('/{id}', [KategoriController::class, 'destroy']);
 });
+});
 
+Route::middleware(['authorize:ADM,MNG'])->group(function () {
 Route::group(['prefix' => 'supplier'], function () {
     Route::post('/list', [SupplierController::class, 'list']);
     Route::get('/', [SupplierController::class, 'index']);
@@ -100,9 +105,10 @@ Route::group(['prefix' => 'supplier'], function () {
     Route::put('/{id}', [SupplierController::class, 'update']);
     Route::delete('/{id}', [SupplierController::class, 'destroy']);
 });
+});
 
+Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
 Route::group(['prefix' => 'barang'], function () {
-    Route::get('/', [SupplierController::class, 'index']);
     Route::get('/', [BarangController::class, 'index']);
     Route::post('/list', [BarangController::class, 'list']);
     Route::get('/create', [BarangController::class, 'create']);
@@ -119,6 +125,8 @@ Route::group(['prefix' => 'barang'], function () {
     Route::put('/{id}', [BarangController::class, 'update']);
     Route::delete('/{id}', [BarangController::class, 'destroy']);
 });
+});
+
 });
 
 
