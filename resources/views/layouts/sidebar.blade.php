@@ -51,6 +51,12 @@
                     <p>Data Supplier</p>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ url('/logout') }}" class="nav-link {{ $activeMenu == 'logout' ? 'active' : '' }} ">
+                    <i class="nav-icon fas fa-sign-out-alt"></i>
+                    <p>logout</p>
+                </a>
+            </li>
         </ul>
     </nav>
 </div>
