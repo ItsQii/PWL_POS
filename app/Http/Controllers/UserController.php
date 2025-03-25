@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LevelModel;
+use App\Models\User;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -39,15 +40,14 @@ class UserController extends Controller
         return DataTables::of($users)
             ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom:DT_RowIndex)
             ->addColumn('aksi', function ($user) {
-                /* $btn = '<a href="'.url('/user/' . $user->user_id).'" class="btn btn-info btnsm">Detail</a> ';
-$btn .= '<a href="'.url('/user/' . $user->user_id . '/edit').'" class="btn btnwarning btn-sm">Edit</a> ';
-$btn .= '<form class="d-inline-block" method="POST" action="'. url('/user/'.$user-
->user_id).'">'
-. csrf_field() . method_field('DELETE') .
-'<button type="submit" class="btn btn-danger btn-sm" onclick="return
-confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';*/
-                $btn = '<button onclick="modalAction(\'' . url('/user/' . $user->user_id .
-                    '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                 $btn = '<a href="'.url('/user/' . $user->user_id).'" class="btn btn-info btnsm">Detail</a> ';
+//$btn .= '<a href="'.url('/user/' . $user->user_id . '/edit').'" class="btn btnwarning btn-sm">Edit</a> ';
+//$btn .= '<form class="d-inline-block" method="POST" action="'. url('/user/'.$user->user_id).'">'
+// . csrf_field() . method_field('DELETE') .
+// '<button type="submit" class="btn btn-danger btn-sm" onclick="return
+// confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';*/
+                // $btn = '<button onclick="modalAction(\'' . url('/user/' . $user->user_id .
+                //     '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/user/' . $user->user_id .
                     '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/user/' . $user->user_id .
@@ -260,25 +260,28 @@ confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';*/
         $user = UserModel::find($id);
         return view('user.confirm_ajax', ['user' => $user]);
     }
-
-    public function delete_ajax(Request $request, $id)
+    
+    public function delete_ajax($id)
     {
-        // cek apakah request dari ajax
-        if ($request->ajax() || $request->wantsJson()) {
-            $user = UserModel::find($id);
-            if ($user) {
-                $user->delete();
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil dihapus'
-                ]);
-            } else {
+        try {
+            $user = UserModel::findOrFail($id);
+            $user->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User berhasil dihapus'
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == "23000") {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Data tidak ditemukan'
+                    'message' => 'User tidak bisa dihapus karena memiliki relasi dengan tabel lain'
                 ]);
             }
+            return response()->json([
+                'status' => false,
+                'message' => 'Terjadi kesalahan saat menghapus user'
+            ]);
         }
-        redirect('/');
     }
 }
