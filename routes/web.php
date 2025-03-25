@@ -44,6 +44,7 @@ Route::group(['prefix' => 'user'], function () {
     Route::delete('/{id}', [UserController::class, 'destroy']);
 });
 
+Route::middleware(['authorize:ADM'])->group(function () {
 Route::group(['prefix' => 'level'], function () {
     Route::get('/', [LevelController::class, 'index']);
         Route::post('/list', [LevelController::class, 'list']);
@@ -60,6 +61,7 @@ Route::group(['prefix' => 'level'], function () {
         Route::get('/{id}/edit', [LevelController::class, 'edit']);
         Route::put('/{id}', [LevelController::class, 'update']);
         Route::delete('/{id}', [LevelController::class, 'destroy']);
+});
 });
 
 Route::group(['prefix' => 'kategori'], function () {
