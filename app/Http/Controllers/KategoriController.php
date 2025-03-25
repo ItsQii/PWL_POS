@@ -36,12 +36,18 @@ class KategoriController extends Controller
             // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->addIndexColumn()
             ->addColumn('aksi', function ($kategori) { // menambahkan kolom aksi
-                $btn = '<a href="' . url('/kategori/' . $kategori->kategori_id) . '" class="btn btn-info btnsm">Detail</a> ';
-                $btn .= '<a href="' . url('/kategori/' . $kategori->kategori_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
-                $btn .= '<form class="d-inline-block" method="POST" action="' .
-                    url('/kategori/' . $kategori->kategori_id) . '">'
-                    . csrf_field() . method_field('DELETE') .
-                    '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';
+                // $btn = '<a href="' . url('/kategori/' . $kategori->kategori_id) . '" class="btn btn-info btnsm">Detail</a> ';
+                // $btn .= '<a href="' . url('/kategori/' . $kategori->kategori_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
+                // $btn .= '<form class="d-inline-block" method="POST" action="' .
+                //     url('/kategori/' . $kategori->kategori_id) . '">'
+                //     . csrf_field() . method_field('DELETE') .
+                //     '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';
+                $btn = '<button onclick="modalAction(\'' . url('/kategori/' . $kategori->kategori_id .
+                    '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/kategori/' . $kategori->kategori_id .
+                    '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/kategori/' . $kategori->kategori_id .
+                    '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
             })
             ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
@@ -162,7 +168,7 @@ class KategoriController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'kategori_nama' => 'required|string|max:100',
-                'kategori_kode' => 'required|string|max:5'
+                'kategori_kode' => 'required|string|max:7'
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -201,7 +207,7 @@ class KategoriController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'kategori_nama' => 'required|string|max:100',
-                'kategori_kode' => 'required|string|max:5'
+                'kategori_kode' => 'required|string|max:7'
             ];
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
@@ -228,7 +234,7 @@ class KategoriController extends Controller
                 ]);
             }
         }
-        return redirect('/');
+         redirect('/');
     }
 
     public function confirm_ajax(String $id)
