@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,6 +42,26 @@ class AuthController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        return redirect('login');
+    }
+
+    public function register()
+    {
+        return view('auth.register');
+    }
+
+    public function postregister(Request $request)
+    {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+        $user = new UserModel;
+        $user->username = $request->username;
+        $user->nama = $request->nama;
+        $user->password = bcrypt($request->password);
+        $user->level_id = 4;
+        $user->save();
         return redirect('login');
     }
 }

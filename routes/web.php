@@ -22,6 +22,8 @@ Route::pattern('id', '[0-9]+');
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::get('register', [AuthController::class, 'register']);
+Route::post('register', [AuthController::class, 'postregister']);
 
 Route::middleware(['auth'])->group(function () {
 Route::get('/', [WelcomeController::class, 'index']);
@@ -109,6 +111,7 @@ Route::group(['prefix' => 'supplier'], function () {
 
 Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
 Route::group(['prefix' => 'barang'], function () {
+
     Route::get('/', [BarangController::class, 'index']);
     Route::post('/list', [BarangController::class, 'list']);
     Route::get('/create', [BarangController::class, 'create']);
@@ -124,6 +127,10 @@ Route::group(['prefix' => 'barang'], function () {
     Route::get('/{id}/edit', [BarangController::class, 'edit']);
     Route::put('/{id}', [BarangController::class, 'update']);
     Route::delete('/{id}', [BarangController::class, 'destroy']);
+    Route::get('/import', [BarangController::class, 'import']);
+    Route::post('/import_ajax', [BarangController::class, 'import_ajax']);
+    Route::get('/export_excel', [BarangController::class, 'export_excel']);
+    Route::get('/export_pdf', [BarangController::class, 'export_pdf']);
 });
 });
 

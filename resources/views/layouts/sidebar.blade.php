@@ -42,7 +42,7 @@
             <li class="nav-item">
                 <a href="{{ url('/barang') }}" class="nav-link {{ ($activeMenu == 'barang') ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-cubes"></i>
-                    <p>Stok Barang</p>
+                    <p>Barang</p>
                 </a>
             </li>
             <li class="nav-item">

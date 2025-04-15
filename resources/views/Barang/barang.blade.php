@@ -4,7 +4,9 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a class="btn btn-sm btn-primary mt-1" href="{{ url('barang/create') }}">Tambah</a>
+                <button onclick="modalAction('{{ url('barang/import') }}')" class="btn btn-info">Import Barang</button>
+                <a href="{{ url('barang/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export Barang excel</a>
+                <a href="{{ url('barang/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export Barang pdf</a>
                 <button onclick="modalAction('{{ url('barang/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
                     Ajax</button>
             </div>
@@ -52,68 +54,65 @@
         @endpush
         @push('js')
             <script>
-                function modalAction(url = '') {
-                    $('#myModal').load(url, function() {
-                        $('#myModal').modal('show');
-                    });
-                }
+                 function modalAction(url = '') {
+        $('#myModal').load(url, function() {
+            $('#myModal').modal('show');
+        });
+    }
 
-                var dataUser;
-                $(document).ready(function() {
-                    dataUser = $('#table_user').DataTable({
-                        // serverSide: true, jika ingin menggunakan server side processing
-                        serverSide: true,
-                        ajax: {
-                            "url": "{{ url('barang/list') }}",
-                            "dataType": "json",
-                            "type": "POST",
-                            "data": function(d) {
-                                d.kategori_id = $('#kategori_id').val();
-                            }
-                        },
-                        columns: [{
-                            // nomor urut dari laravel datatable addIndexColumn()
-                            data: "DT_RowIndex",
-                            className: "text-center",
-                            orderable: false,
-                            searchable: false
-                        }, {
-                            data: "kategori.kategori_nama",
-                            className: "",
-                            // orderable: true, jika ingin kolom ini bisa diurutkan
-                            orderable: true,
-                            // searchable: true, jika ingin kolom ini bisa dicari
-                            searchable: true
-                        }, {
-                            data: "barang_kode",
-                            className: "",
-                            orderable: true,
-                            searchable: true
-                        }, {
-                            data: "barang_nama",
-                            className: "",
-                            orderable: true,
-                            searchable: true
-                        }, {
-                            data: "harga_beli",
-                            className: "",
-                            orderable: true,
-                            searchable: true
-                        }, {
-                            data: "harga_jual",
-                            className: "",
-                            orderable: true,
-                            searchable: true
-                        }, {
-                            data: "aksi",
-                            className: "",
-                            orderable: false,
-                            searchable: false
-                        }]
-                    });
-                    $('#kategori_id').on('change', function() {
-                        dataUser.ajax.reload();
-                    })
-                });
+    var dataUser;
+    $(document).ready(function() {
+        dataUser = $('#table_user').DataTable({
+            serverSide: true,
+            ajax: {
+                "url": "{{ url('barang/list') }}",
+                "dataType": "json",
+                "type": "POST",
+                "data": function(d) {
+                    d.kategori_id = $('#kategori_id').val();
+                }
+            },
+            columns: [{
+                data: "DT_RowIndex",
+                className: "text-center",
+                orderable: false,
+                searchable: false
+            }, {
+                data: "kategori.kategori_nama",
+                orderable: true,
+                searchable: true
+            }, {
+                data: "barang_kode",
+                orderable: true,
+                searchable: true
+            }, {
+                data: "barang_nama",
+                orderable: true,
+                searchable: true
+            }, {
+                data: "harga_beli",
+                orderable: true,
+                searchable: true
+            }, {
+                data: "harga_jual",
+                orderable: true,
+                searchable: true
+            }, {
+                data: "aksi",
+                orderable: false,
+                searchable: false
+            }]
+        });
+
+        $('#table_user_filter input').unbind().bind().on('keyup', function(e) {
+            if (e.keyCode == 13) {
+                dataUser.search(this.value).draw();
+            }
+        });
+
+        $('#kategori_id').change(function() {
+            dataUser.draw();
+        });
+    });
             </script>
         @endpush
